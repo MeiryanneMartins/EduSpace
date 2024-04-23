@@ -3,7 +3,7 @@ class BlogPostsController < ApplicationController
   before_action :set_blog_post, only: [:show, :edit, :update, :destroy]
 
   def index
-    @blog_posts = user_signed_in? ? BlogPost.all : BlogPost.published
+    @blog_posts = user_signed_in? ? BlogPost.sorted : BlogPost.published.sorted
   end
 
   def show
@@ -26,7 +26,7 @@ class BlogPostsController < ApplicationController
   end
   
   def update
-    if blog_post.update(blog_post_params)
+    if @blog_post.update(blog_post_params)
       redirect_to @blog_post
     else
       render :edit, status: :unprocessable_entity
@@ -41,7 +41,7 @@ class BlogPostsController < ApplicationController
   private
 
   def blog_post_params
-    params.require(:blog_post).permit(:title, :body)
+    params.require(:blog_post).permit(:title, :body, :published_at)
   end
   
   def set_blog_post
